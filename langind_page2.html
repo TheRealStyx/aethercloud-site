@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AetherCloud</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23080c10'/%3E%3Cline x1='9' y1='9' x2='23' y2='7' stroke='%2300c2ff' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cline x1='9' y1='9' x2='25' y2='20' stroke='%2300c2ff' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cline x1='9' y1='9' x2='12' y2='25' stroke='%2300c2ff' stroke-width='1.4' stroke-opacity='0.6'/%3E%3Cline x1='23' y1='7' x2='25' y2='20' stroke='%2300c2ff' stroke-width='1.1' stroke-opacity='0.35'/%3E%3Cline x1='25' y1='20' x2='12' y2='25' stroke='%2300c2ff' stroke-width='1.1' stroke-opacity='0.35'/%3E%3Ccircle cx='23' cy='7' r='3.2' fill='%230d1117' stroke='%2300c2ff' stroke-width='1.3'/%3E%3Ccircle cx='25' cy='20' r='3.2' fill='%230d1117' stroke='%2300c2ff' stroke-width='1.3'/%3E%3Ccircle cx='12' cy='25' r='3.2' fill='%230d1117' stroke='%2300c2ff' stroke-width='1.3'/%3E%3Ccircle cx='23' cy='7' r='1.4' fill='%2300c2ff' opacity='0.7'/%3E%3Ccircle cx='25' cy='20' r='1.4' fill='%2300c2ff' opacity='0.7'/%3E%3Ccircle cx='12' cy='25' r='1.4' fill='%2300c2ff' opacity='0.7'/%3E%3Ccircle cx='9' cy='9' r='5' fill='%230d1117' stroke='%2300c2ff' stroke-width='1.6'/%3E%3Ccircle cx='9' cy='9' r='2.4' fill='%2300c2ff' opacity='0.9'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Geist+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300;1,9..144,400&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg: #080c10;
+        --surface: #0d1117;
+        --surface-2: #111820;
+        --border: rgba(255, 255, 255, 0.06);
+        --border-bright: rgba(255, 255, 255, 0.12);
+        --text: #e8edf5;
+        --muted: #5a6a7e;
+        --muted-2: #3a4a5e;
+        --accent: #00c2ff;
+        --accent-glow: rgba(0, 194, 255, 0.15);
+        --accent-2: #7aff9c;
+        --accent-warm: #ff9a3c;
+        --white: #ffffff;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Syne", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* NOISE TEXTURE OVERLAY */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+        opacity: 0.025;
+        pointer-events: none;
+        z-index: 9999;
+      }
+
+      /* ─── NAV ─────────────────────────────── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(8, 12, 16, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 0.5px solid var(--border);
+        padding: 0 6%;
+        height: 64px;
+        display: flex;
+        align-items: center;
+      }
+
+      .nav-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--white);
+        letter-spacing: -0.3px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .logo-mark {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 32px;
+        align-items: center;
+      }
+      nav ul a {
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--muted);
+        transition: color 0.2s;
+        letter-spacing: 0.3px;
+      }
+      nav ul a:hover {
+        color: var(--text);
+      }
+
+      .nav-cta {
+        background: transparent !important;
+        color: var(--accent) !important;
+        border: 1px solid rgba(0, 194, 255, 0.35) !important;
+        padding: 8px 20px !important;
+        border-radius: 6px;
+        font-size: 13px !important;
+        font-weight: 500 !important;
+        transition: all 0.2s !important;
+      }
+      .nav-cta:hover {
+        background: var(--accent-glow) !important;
+        border-color: var(--accent) !important;
+        color: var(--accent) !important;
+      }
+
+      /* ─── HERO ────────────────────────────── */
+      .hero {
+        min-height: 92vh;
+        display: flex;
+        align-items: center;
+        padding: 80px 6% 60px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* radial glow background */
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: -20%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 900px;
+        height: 600px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(0, 194, 255, 0.07) 0%,
+          transparent 65%
+        );
+        pointer-events: none;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--border-bright),
+          transparent
+        );
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: 1fr 0.9fr;
+        gap: 80px;
+        align-items: center;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .hero-tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        font-weight: 400;
+        color: var(--accent);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 32px;
+        opacity: 0;
+        animation: fadeUp 0.6s 0.1s ease forwards;
+      }
+
+      .hero-tag::before {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: var(--accent);
+      }
+
+      .hero-tag-dot {
+        width: 5px;
+        height: 5px;
+        background: var(--accent);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--accent);
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.7);
+        }
+      }
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      h1 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(44px, 5.5vw, 76px);
+        line-height: 1.05;
+        color: var(--white);
+        letter-spacing: -1.5px;
+        margin-bottom: 28px;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.25s ease forwards;
+      }
+
+      h1 em {
+        font-style: italic;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(0, 194, 255, 0.6);
+        font-style: italic;
+      }
+
+      .hero-sub {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 440px;
+        margin-bottom: 44px;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.4s ease forwards;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        flex-wrap: wrap;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.55s ease forwards;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--bg);
+        padding: 13px 28px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-block;
+        letter-spacing: 0.2px;
+        box-shadow: 0 0 24px rgba(0, 194, 255, 0.25);
+      }
+      .btn-primary:hover {
+        background: #33ccff;
+        box-shadow: 0 0 36px rgba(0, 194, 255, 0.45);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        color: var(--muted);
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: color 0.2s;
+      }
+      .btn-secondary:hover {
+        color: var(--text);
+      }
+      .btn-secondary span {
+        font-size: 16px;
+      }
+
+      /* ─── HERO TERMINAL ───────────────────── */
+      .hero-terminal {
+        background: var(--surface);
+        border: 0.5px solid var(--border-bright);
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5), 0 0 0 0.5px var(--border);
+        opacity: 0;
+        animation: fadeUp 0.8s 0.4s ease forwards;
+      }
+
+      .term-bar {
+        background: var(--surface-2);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 0.5px solid var(--border);
+      }
+
+      .tdot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .td1 {
+        background: #ff5f57;
+      }
+      .td2 {
+        background: #febc2e;
+      }
+      .td3 {
+        background: #28c840;
+      }
+
+      .term-title {
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        color: var(--muted);
+        margin-left: 8px;
+      }
+
+      .term-body {
+        padding: 22px 22px 0;
+      }
+
+      .term-metrics {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .tm {
+        background: rgba(0, 194, 255, 0.04);
+        border: 0.5px solid rgba(0, 194, 255, 0.12);
+        border-radius: 8px;
+        padding: 14px 16px;
+      }
+      .tm-label {
+        font-family: "Geist Mono", monospace;
+        font-size: 9px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 6px;
+      }
+      .tm-val {
+        font-family: "Fraunces", serif;
+        font-size: 32px;
+        color: var(--accent);
+        line-height: 1;
+        text-shadow: 0 0 20px rgba(0, 194, 255, 0.4);
+      }
+      .tm-delta {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--accent-2);
+        margin-top: 5px;
+      }
+
+      .term-flows {
+        margin-bottom: 18px;
+      }
+
+      .flow-header {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin-bottom: 14px;
+      }
+
+      .flow-row {
+        margin-bottom: 12px;
+      }
+
+      .flow-info {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+      .flow-name {
+        color: var(--text);
+      }
+      .flow-pct {
+        font-weight: 500;
+      }
+      .fp1 {
+        color: var(--accent);
+      }
+      .fp2 {
+        color: var(--accent-2);
+      }
+      .fp3 {
+        color: var(--accent-warm);
+      }
+
+      .flow-track {
+        height: 3px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+      .flow-fill {
+        height: 100%;
+        border-radius: 2px;
+        animation: grow 2s ease-out forwards;
+      }
+      .ff1 {
+        background: var(--accent);
+        box-shadow: 0 0 8px rgba(0, 194, 255, 0.6);
+      }
+      .ff2 {
+        background: var(--accent-2);
+        box-shadow: 0 0 8px rgba(122, 255, 156, 0.6);
+      }
+      .ff3 {
+        background: var(--accent-warm);
+        box-shadow: 0 0 8px rgba(255, 154, 60, 0.6);
+      }
+
+      @keyframes grow {
+        from {
+          width: 0;
+        }
+      }
+
+      .term-log {
+        border-top: 0.5px solid var(--border);
+        padding: 16px 22px;
+      }
+
+      .log-line {
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        margin-bottom: 6px;
+        display: flex;
+        gap: 10px;
+        opacity: 0;
+      }
+      .log-line:nth-child(1) {
+        animation: fadeIn 0.3s 1.2s forwards;
+      }
+      .log-line:nth-child(2) {
+        animation: fadeIn 0.3s 1.7s forwards;
+      }
+      .log-line:nth-child(3) {
+        animation: fadeIn 0.3s 2.2s forwards;
+      }
+
+      .log-time {
+        color: var(--muted-2);
+      }
+      .log-ok {
+        color: var(--accent-2);
+      }
+      .log-info {
+        color: var(--muted);
+      }
+      .log-sys {
+        color: var(--accent);
+      }
+
+      /* ─── SECTIONS ────────────────────────── */
+      section {
+        padding: 100px 6%;
+      }
+      .section-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .section-eyebrow {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .section-eyebrow::before {
+        content: "";
+        width: 20px;
+        height: 1px;
+        background: var(--accent);
+      }
+
+      h2 {
+        font-family: "Fraunces", serif;
+        font-size: clamp(34px, 4vw, 54px);
+        color: var(--white);
+        letter-spacing: -1px;
+        line-height: 1.1;
+        margin-bottom: 16px;
+      }
+      h2 em {
+        font-style: italic;
+        color: var(--accent);
+      }
+
+      .section-sub {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 540px;
+        margin-bottom: 56px;
+      }
+
+      /* ─── SERVICES ────────────────────────── */
+      #servicos {
+        background: var(--surface);
+      }
+
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1px;
+        background: var(--border);
+        border: 0.5px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      .svc {
+        background: var(--surface);
+        padding: 44px;
+        transition: background 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .svc::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .svc:hover {
+        background: var(--surface-2);
+      }
+      .svc:hover::before {
+        opacity: 1;
+      }
+
+      .svc-num {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--muted-2);
+        letter-spacing: 1.5px;
+        margin-bottom: 24px;
+      }
+
+      .svc-icon {
+        font-size: 26px;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .svc h3 {
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 14px;
+        letter-spacing: -0.3px;
+      }
+
+      .svc p {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 22px;
+      }
+      .tag {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        font-weight: 400;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        border: 0.5px solid var(--border-bright);
+        padding: 3px 10px;
+        border-radius: 4px;
+        letter-spacing: 0.3px;
+      }
+
+      /* ─── ABOUT ───────────────────────────── */
+      .about-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 80px;
+        align-items: start;
+      }
+
+      .about-body {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.85;
+        margin-bottom: 20px;
+      }
+
+      .about-quote {
+        font-family: "Fraunces", serif;
+        font-size: 20px;
+        font-style: italic;
+        color: var(--text);
+        line-height: 1.6;
+        padding: 28px 32px;
+        border-left: 2px solid var(--accent);
+        background: rgba(0, 194, 255, 0.04);
+        border-radius: 0 10px 10px 0;
+        margin: 36px 0;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .stat {
+        background: var(--surface);
+        border: 0.5px solid var(--border-bright);
+        border-radius: 12px;
+        padding: 26px;
+        transition: border-color 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-2));
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .stat:hover::after {
+        opacity: 0.6;
+      }
+
+      .stat-num {
+        font-family: "Fraunces", serif;
+        font-size: 48px;
+        color: var(--white);
+        line-height: 1;
+        margin-bottom: 8px;
+        letter-spacing: -1px;
+      }
+      .stat-num span {
+        color: var(--accent);
+      }
+      .stat-desc {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: 400;
+        line-height: 1.6;
+      }
+
+      /* ─── PROJECTS ────────────────────────── */
+      #projetos {
+        background: var(--surface);
+      }
+
+      .projects-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+      }
+
+      .pcard {
+        background: var(--bg);
+        border: 0.5px solid var(--border-bright);
+        border-radius: 16px;
+        padding: 44px;
+        transition: border-color 0.25s, transform 0.25s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .pcard::before {
+        content: "";
+        position: absolute;
+        top: -1px;
+        left: 20%;
+        right: 20%;
+        height: 1px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--accent),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .pcard:hover {
+        border-color: rgba(0, 194, 255, 0.25);
+        transform: translateY(-4px);
+      }
+      .pcard:hover::before {
+        opacity: 1;
+      }
+
+      .pbadge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        font-weight: 500;
+        color: var(--accent-2);
+        background: rgba(122, 255, 156, 0.07);
+        border: 0.5px solid rgba(122, 255, 156, 0.2);
+        padding: 4px 12px;
+        border-radius: 4px;
+        margin-bottom: 24px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+      }
+
+      .pbadge-dot {
+        width: 5px;
+        height: 5px;
+        background: var(--accent-2);
+        border-radius: 50%;
+        box-shadow: 0 0 6px var(--accent-2);
+        animation: pulse 2s infinite;
+      }
+
+      .pcard h3 {
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 14px;
+        letter-spacing: -0.4px;
+      }
+
+      .pcard p {
+        font-size: 14px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: 24px;
+      }
+
+      .pstack {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .stag {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--muted);
+        border: 0.5px solid var(--border-bright);
+        padding: 3px 10px;
+        border-radius: 4px;
+      }
+
+      /* ─── DIFFERENTIALS ───────────────────── */
+      .diff-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+
+      .diff-card {
+        padding: 36px;
+        border: 0.5px solid var(--border);
+        border-radius: 14px;
+        background: var(--surface);
+        transition: border-color 0.2s;
+      }
+      .diff-card:hover {
+        border-color: var(--border-bright);
+      }
+
+      .diff-num {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--muted-2);
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+      }
+
+      .diff-card h3 {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 12px;
+        letter-spacing: -0.3px;
+      }
+
+      .diff-card p {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 400;
+        line-height: 1.8;
+      }
+
+      /* ─── CTA ─────────────────────────────── */
+      .cta-section {
+        padding: 120px 6%;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .cta-section::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 500px;
+        background: radial-gradient(
+          ellipse,
+          rgba(0, 194, 255, 0.06) 0%,
+          transparent 65%
+        );
+        pointer-events: none;
+      }
+
+      .cta-inner {
+        max-width: 700px;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .cta-tag {
+        font-family: "Geist Mono", monospace;
+        font-size: 10px;
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+      }
+      .cta-tag::before,
+      .cta-tag::after {
+        content: "";
+        width: 24px;
+        height: 1px;
+        background: rgba(0, 194, 255, 0.3);
+      }
+
+      .cta-section h2 {
+        font-size: clamp(36px, 5vw, 60px);
+        margin-bottom: 20px;
+      }
+
+      .cta-section p {
+        font-size: 16px;
+        font-weight: 400;
+        color: var(--muted);
+        line-height: 1.8;
+        margin-bottom: 48px;
+        max-width: 520px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .cta-btns {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn-outline {
+        border: 1px solid var(--border-bright);
+        color: var(--muted);
+        padding: 13px 28px;
+        border-radius: 7px;
+        font-size: 14px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-block;
+        font-family: "Syne", sans-serif;
+      }
+      .btn-outline:hover {
+        border-color: rgba(255, 255, 255, 0.25);
+        color: var(--text);
+      }
+
+      /* ─── FOOTER ──────────────────────────── */
+      footer {
+        background: var(--surface);
+        border-top: 0.5px solid var(--border);
+        padding: 32px 6%;
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+
+      .footer-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        font-weight: 700;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      footer p {
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        color: var(--muted-2);
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 28px;
+      }
+      .footer-links a {
+        font-family: "Geist Mono", monospace;
+        font-size: 11px;
+        color: var(--muted-2);
+        text-decoration: none;
+        transition: color 0.2s;
+        letter-spacing: 0.3px;
+      }
+      .footer-links a:hover {
+        color: var(--muted);
+      }
+
+      /* ─── RESPONSIVE ──────────────────────── */
+      @media (max-width: 960px) {
+        .hero-grid,
+        .about-grid {
+          grid-template-columns: 1fr;
+          gap: 48px;
+        }
+        .services-grid,
+        .projects-grid,
+        .diff-grid {
+          grid-template-columns: 1fr;
+        }
+        nav ul {
+          display: none;
+        }
+        .hero {
+          min-height: auto;
+          padding: 60px 6%;
+        }
+        section {
+          padding: 72px 6%;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-inner">
+        <a href="#" class="logo" onclick="window.scrollTo({top:0,behavior:'smooth'}); return false;">
+          <svg class="logo-mark" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- connecting lines -->
+            <line x1="9" y1="9" x2="23" y2="7"  stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.6"/>
+            <line x1="9" y1="9" x2="25" y2="20" stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.6"/>
+            <line x1="9" y1="9" x2="12" y2="25" stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.6"/>
+            <line x1="23" y1="7" x2="25" y2="20" stroke="#00c2ff" stroke-width="1.1" stroke-opacity="0.35"/>
+            <line x1="25" y1="20" x2="12" y2="25" stroke="#00c2ff" stroke-width="1.1" stroke-opacity="0.35"/>
+            <!-- satellite nodes -->
+            <circle cx="23" cy="7"  r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3"/>
+            <circle cx="25" cy="20" r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3"/>
+            <circle cx="12" cy="25" r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3"/>
+            <!-- satellite dots -->
+            <circle cx="23" cy="7"  r="1.4" fill="#00c2ff" opacity="0.7"/>
+            <circle cx="25" cy="20" r="1.4" fill="#00c2ff" opacity="0.7"/>
+            <circle cx="12" cy="25" r="1.4" fill="#00c2ff" opacity="0.7"/>
+            <!-- main hub -->
+            <circle cx="9" cy="9" r="5" fill="#0d1117" stroke="#00c2ff" stroke-width="1.6"/>
+            <circle cx="9" cy="9" r="2.4" fill="#00c2ff" opacity="0.9" filter="url(#glow)"/>
+            <defs>
+              <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur stdDeviation="1.5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+          </svg>
+          AetherCloud
+        </a>
+        <ul>
+          <li><a href="#servicos">Serviços</a></li>
+          <li><a href="#sobre">Sobre</a></li>
+          <li><a href="#projetos">Projetos</a></li>
+          <li><a href="#contato" class="nav-cta">Falar com a gente</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-tag">
+            <div class="hero-tag-dot"></div>
+            Automação · Sistemas · IA
+          </div>
+
+          <h1>
+            Sua empresa opera.<br /><em>A gente</em> automatiza<br />o resto.
+          </h1>
+
+          <p class="hero-sub">
+            Desenvolvemos sistemas, automações e soluções de IA que eliminam
+            processos manuais, reduzem erros e liberam sua equipe para o que
+            realmente importa.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#contato" class="btn-primary">Quero uma proposta</a>
+            <a href="#servicos" class="btn-secondary"
+              >Ver serviços <span>→</span></a
+            >
+          </div>
+        </div>
+
+        <div class="hero-terminal">
+          <div class="term-bar">
+            <div class="tdot td1"></div>
+            <div class="tdot td2"></div>
+            <div class="tdot td3"></div>
+            <span class="term-title">aethercloud — ops/monitor</span>
+          </div>
+
+          <div class="term-body">
+            <div class="term-metrics">
+              <div class="tm">
+                <div class="tm-label">Processos / mês</div>
+                <div class="tm-val">847</div>
+                <div class="tm-delta">↑ 34% este mês</div>
+              </div>
+              <div class="tm">
+                <div class="tm-label">Horas salvas</div>
+                <div class="tm-val">312</div>
+                <div class="tm-delta">↑ desde implantação</div>
+              </div>
+            </div>
+
+            <div class="term-flows">
+              <div class="flow-header">// automações ativas</div>
+              <div class="flow-row">
+                <div class="flow-info">
+                  <span class="flow-name">Fluxo financeiro</span>
+                  <span class="flow-pct fp1">92%</span>
+                </div>
+                <div class="flow-track">
+                  <div class="flow-fill ff1" style="width: 92%"></div>
+                </div>
+              </div>
+              <div class="flow-row">
+                <div class="flow-info">
+                  <span class="flow-name">Gestão de documentos</span>
+                  <span class="flow-pct fp2">78%</span>
+                </div>
+                <div class="flow-track">
+                  <div class="flow-fill ff2" style="width: 78%"></div>
+                </div>
+              </div>
+              <div class="flow-row">
+                <div class="flow-info">
+                  <span class="flow-name">Relatórios gerenciais</span>
+                  <span class="flow-pct fp3">65%</span>
+                </div>
+                <div class="flow-track">
+                  <div class="flow-fill ff3" style="width: 65%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="term-log">
+            <div class="log-line">
+              <span class="log-time">09:14:22</span>
+              <span class="log-ok">✓</span>
+              <span class="log-info"
+                >Faturamento NF-e processado com sucesso</span
+              >
+            </div>
+            <div class="log-line">
+              <span class="log-time">09:14:31</span>
+              <span class="log-ok">✓</span>
+              <span class="log-info"
+                >Relatório gerencial gerado automaticamente</span
+              >
+            </div>
+            <div class="log-line">
+              <span class="log-time">09:14:45</span>
+              <span class="log-sys">⚡</span>
+              <span class="log-info"
+                >Agente IA respondeu 3 solicitações de clientes</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="servicos">
+      <div class="section-wrap">
+        <div class="section-eyebrow">O que fazemos</div>
+        <h2>Soluções que <em>funcionam</em><br />na prática</h2>
+        <p class="section-sub">
+          Não entregamos só código. Entregamos sistemas que resolvem problemas
+          reais — porque entendemos de negócio antes de escrever a primeira
+          linha.
+        </p>
+        <div class="services-grid">
+          <div class="svc">
+            <div class="svc-num">01 / 04</div>
+            <span class="svc-icon">⚡</span>
+            <h3>Automação de Processos</h3>
+            <p>
+              Eliminamos tarefas manuais e repetitivas com fluxos inteligentes.
+              Do lançamento de dados à geração de relatórios — tudo automático,
+              sem erro humano.
+            </p>
+            <div class="tags">
+              <span class="tag">Python</span><span class="tag">N8N</span
+              ><span class="tag">APIs</span><span class="tag">Integrações</span>
+            </div>
+          </div>
+          <div class="svc">
+            <div class="svc-num">02 / 04</div>
+            <span class="svc-icon">🖥️</span>
+            <h3>Desenvolvimento de Sistemas Web</h3>
+            <p>
+              ERPs, plataformas SaaS, dashboards e sistemas de gestão
+              desenvolvidos do zero, desenhados para a realidade do seu negócio.
+            </p>
+            <div class="tags">
+              <span class="tag">React</span><span class="tag">Next.js</span
+              ><span class="tag">Python</span
+              ><span class="tag">SQL / MongoDB</span>
+            </div>
+          </div>
+          <div class="svc">
+            <div class="svc-num">03 / 04</div>
+            <span class="svc-icon">🤖</span>
+            <h3>Assistentes Virtuais e IA</h3>
+            <p>
+              Agentes de IA que executam tarefas, respondem clientes, organizam
+              dados e integram sistemas — funcionando 24h por dia, sem
+              interrupção.
+            </p>
+            <div class="tags">
+              <span class="tag">OpenAI</span><span class="tag">LLMs</span
+              ><span class="tag">Automação</span
+              ><span class="tag">Atendimento</span>
+            </div>
+          </div>
+          <div class="svc">
+            <div class="svc-num">04 / 04</div>
+            <span class="svc-icon">📊</span>
+            <h3>ERPs e Sistemas de Gestão</h3>
+            <p>
+              Sistemas completos de gestão financeira, controle de obras, gestão
+              de custos e relatórios gerenciais integrados ao seu fluxo
+              operacional.
+            </p>
+            <div class="tags">
+              <span class="tag">ERP</span><span class="tag">Financeiro</span
+              ><span class="tag">Controle</span
+              ><span class="tag">Relatórios</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="sobre">
+      <div class="section-wrap">
+        <div class="about-grid">
+          <div>
+            <div class="section-eyebrow">Sobre a AetherCloud</div>
+            <h2>Tecnologia com<br /><em>visão de negócio</em></h2>
+            <p class="about-body">
+              A AetherCloud nasceu da combinação de dois mundos que raramente se
+              encontram: experiência técnica em desenvolvimento de sistemas e
+              inteligência artificial, e background sólido em gestão financeira
+              e processos empresariais.
+            </p>
+            <p class="about-body">
+              Isso significa que quando você descreve um problema, a gente
+              entende o contexto antes de propor uma solução. Não codamos o que
+              você pede — resolvemos o que você precisa.
+            </p>
+            <div class="about-quote">
+              "Entender de finanças, auditoria e operações antes de escrever
+              código é o que diferencia um sistema que funciona de um sistema
+              que complica."
+            </div>
+          </div>
+          <div class="stats-grid">
+            <div class="stat">
+              <div class="stat-num">2<span>+</span></div>
+              <div class="stat-desc">
+                Produtos próprios em produção — ERP e SaaS operantes
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">5<span>+</span></div>
+              <div class="stat-desc">
+                Anos de experiência em gestão financeira e processos
+                corporativos
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">3<span>+</span></div>
+              <div class="stat-desc">
+                Empresas com processos modernizados e automatizados
+              </div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">∞</div>
+              <div class="stat-desc">
+                Horas economizadas com automações entregues
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY US -->
+    <section style="background: var(--surface)">
+      <div class="section-wrap">
+        <div class="section-eyebrow">Por que a AetherCloud</div>
+        <h2>Não somos uma<br /><em>software house</em> comum</h2>
+        <p class="section-sub">
+          O que nos diferencia está no processo — de como ouvimos, entendemos e
+          entregamos.
+        </p>
+        <div class="diff-grid">
+          <div class="diff-card">
+            <div class="diff-num">01</div>
+            <h3>Diagnóstico antes de código</h3>
+            <p>
+              Mapeamos o fluxo operacional completo antes de propor qualquer
+              solução técnica. Isso evita sistemas que resolvem o sintoma e
+              ignoram a causa.
+            </p>
+          </div>
+          <div class="diff-card">
+            <div class="diff-num">02</div>
+            <h3>Background financeiro e de gestão</h3>
+            <p>
+              Raros desenvolvedores entendem de auditoria, controle de custos e
+              estrutura corporativa. Nós entendemos — e isso muda completamente
+              o que é construído.
+            </p>
+          </div>
+          <div class="diff-card">
+            <div class="diff-num">03</div>
+            <h3>Entrega contínua e documentada</h3>
+            <p>
+              Nada de caixa preta. Cada sistema entregue vem documentado, com
+              treinamento e suporte pós-implantação — porque o valor real está
+              no uso, não na entrega.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projetos">
+      <div class="section-wrap">
+        <div class="section-eyebrow">Portfólio</div>
+        <h2>Projetos <em>reais</em>,<br />em produção</h2>
+        <p class="section-sub">
+          Não mostramos protótipos. Mostramos sistemas que estão funcionando
+          agora, com dados reais e usuários ativos.
+        </p>
+        <div class="projects-grid">
+          <div class="pcard">
+            <div class="pbadge">
+              <div class="pbadge-dot"></div>
+              Em produção
+            </div>
+            <h3>ERP — Gestão de Obras</h3>
+            <p>
+              Sistema ERP completo para o setor de construção civil. 5 módulos
+              integrados: controle de custos, gestão de fornecedores, controle
+              de OSs, licitações e financeiro com faturamento e recebimentos.
+            </p>
+            <div class="pstack">
+              <span class="stag">Next.js</span><span class="stag">Python</span
+              ><span class="stag">MongoDB</span
+              ><span class="stag">5 módulos</span>
+            </div>
+          </div>
+          <div class="pcard">
+            <div class="pbadge">
+              <div class="pbadge-dot"></div>
+              Operante
+            </div>
+            <h3>GovCompras — SaaS de Licitações</h3>
+            <p>
+              Plataforma SaaS para gestão completa de processos licitatórios.
+              Monitoramento de editais, controle de prazos, lances
+              automatizados, pesquisa de concorrentes e histórico de valores
+              praticados.
+            </p>
+            <div class="pstack">
+              <span class="stag">React</span><span class="stag">Python</span
+              ><span class="stag">SQL</span
+              ><span class="stag">SaaS / Assinatura</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section id="contato" class="cta-section">
+      <div class="cta-inner">
+        <div class="cta-tag">Vamos conversar</div>
+        <h2>Pronto para <em>automatizar</em><br />sua operação?</h2>
+        <p>
+          Conte o desafio da sua empresa. Em até 24 horas apresentamos uma
+          proposta objetiva de como podemos resolver com tecnologia.
+        </p>
+        <div class="cta-btns">
+          <a href="https://wa.me/5561982497996" class="btn-primary"
+            >💬 Falar pelo WhatsApp</a
+          >
+          <a href="https://mail.google.com/mail/?view=cm&to=styx.mendesmendes@gmail.com" class="btn-outline" target="_blank" rel="noopener"
+            >✉️ Enviar e-mail</a
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-logo">
+          <svg class="logo-mark" width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <line x1="9" y1="9" x2="23" y2="7"  stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.5"/>
+            <line x1="9" y1="9" x2="25" y2="20" stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.5"/>
+            <line x1="9" y1="9" x2="12" y2="25" stroke="#00c2ff" stroke-width="1.4" stroke-opacity="0.5"/>
+            <line x1="23" y1="7" x2="25" y2="20" stroke="#00c2ff" stroke-width="1.1" stroke-opacity="0.3"/>
+            <line x1="25" y1="20" x2="12" y2="25" stroke="#00c2ff" stroke-width="1.1" stroke-opacity="0.3"/>
+            <circle cx="23" cy="7"  r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3" opacity="0.7"/>
+            <circle cx="25" cy="20" r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3" opacity="0.7"/>
+            <circle cx="12" cy="25" r="3.2" fill="#0d1117" stroke="#00c2ff" stroke-width="1.3" opacity="0.7"/>
+            <circle cx="23" cy="7"  r="1.4" fill="#00c2ff" opacity="0.5"/>
+            <circle cx="25" cy="20" r="1.4" fill="#00c2ff" opacity="0.5"/>
+            <circle cx="12" cy="25" r="1.4" fill="#00c2ff" opacity="0.5"/>
+            <circle cx="9" cy="9" r="5" fill="#0d1117" stroke="#00c2ff" stroke-width="1.6" opacity="0.7"/>
+            <circle cx="9" cy="9" r="2.4" fill="#00c2ff" opacity="0.6"/>
+          </svg>
+          AetherCloud
+        </div>
+        <p>© 2026 AetherCloud · aethercloud.com.br</p>
+        <div class="footer-links">
+          <a href="#servicos">Serviços</a>
+          <a href="#sobre">Sobre</a>
+          <a href="#projetos">Projetos</a>
+          <a href="https://wa.me/5561982497996">Contato</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
