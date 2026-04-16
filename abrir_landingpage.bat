@@ -1,2 +1,2 @@
 @echo off
-start "" "%~dp0langind_page2.html"
+start "" "%~dp0index.html"
