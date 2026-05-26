@@ -1497,7 +1497,7 @@
           <div class="portfolio-card-img">
             <img src="assets/portfolio/govcompras/capa.png" alt="GovCompras" loading="lazy" />
             <div class="portfolio-card-img-overlay">
-              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver screenshots</span>
+              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver imagens</span>
             </div>
           </div>
           <div class="portfolio-card-body">
@@ -1509,7 +1509,7 @@
             <h3>GovCompras</h3>
             <p>Plataforma SaaS que monitora licitações em todo o Brasil, com mais de R$41 bilhões em contratos indexados. Ferramentas de engenharia, geração de propostas e painel jurídico integrados.</p>
             <div class="portfolio-card-footer">
-              <a href="https://www.aethercloud.com.br" target="_blank" rel="noopener" class="portfolio-card-link" onclick="event.stopPropagation()">
+              <a href="https://www.govcompras.com/" target="_blank" rel="noopener" class="portfolio-card-link" onclick="event.stopPropagation()">
                 Acessar plataforma <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
               </a>
             </div>
@@ -1521,7 +1521,7 @@
           <div class="portfolio-card-img">
             <img src="assets/portfolio/lancebot/capa.png" alt="LanceBot" loading="lazy" />
             <div class="portfolio-card-img-overlay">
-              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver screenshots</span>
+              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver imagens</span>
             </div>
           </div>
           <div class="portfolio-card-body">
@@ -1540,7 +1540,7 @@
           <div class="portfolio-card-img">
             <img src="assets/portfolio/orce-erp/capa.png" alt="Orçe ERP" loading="lazy" />
             <div class="portfolio-card-img-overlay">
-              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver screenshots</span>
+              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver imagens</span>
             </div>
           </div>
           <div class="portfolio-card-body">
@@ -1559,7 +1559,7 @@
           <div class="portfolio-card-img">
             <img src="assets/portfolio/whatsapp-bot/capa.png" alt="Bot IA WhatsApp" loading="lazy" />
             <div class="portfolio-card-img-overlay">
-              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver screenshots</span>
+              <span><i data-lucide="images" style="width:13px;height:13px;"></i> Ver imagens</span>
             </div>
           </div>
           <div class="portfolio-card-body">
@@ -1722,6 +1722,24 @@
     <span class="wa-tooltip">Falar no WhatsApp</span>
   </a>
 
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lbClose" aria-label="Fechar">
+      <i data-lucide="x" style="width:18px;height:18px;"></i>
+    </button>
+    <p class="lightbox-title" id="lbTitle"></p>
+    <div class="lightbox-img-wrap">
+      <button class="lightbox-nav" id="lbPrev" aria-label="Anterior">
+        <i data-lucide="chevron-left" style="width:22px;height:22px;"></i>
+      </button>
+      <img id="lbImg" src="" alt="Imagem do projeto" />
+      <button class="lightbox-nav" id="lbNext" aria-label="Próximo">
+        <i data-lucide="chevron-right" style="width:22px;height:22px;"></i>
+      </button>
+    </div>
+    <div class="lightbox-thumbs" id="lbThumbs"></div>
+  </div>
+
   <!-- Lucide -->
   <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
   <script>lucide.createIcons();</script>
@@ -1827,23 +1845,5 @@
       if (e.key === 'ArrowRight' && lbCurrent < lbImgs.length - 1) lbGoto(lbCurrent + 1);
     });
   </script>
-
-  <!-- Lightbox -->
-  <div class="lightbox" id="lightbox">
-    <button class="lightbox-close" id="lbClose" aria-label="Fechar">
-      <i data-lucide="x" style="width:18px;height:18px;"></i>
-    </button>
-    <p class="lightbox-title" id="lbTitle"></p>
-    <div class="lightbox-img-wrap">
-      <button class="lightbox-nav" id="lbPrev" aria-label="Anterior">
-        <i data-lucide="chevron-left" style="width:22px;height:22px;"></i>
-      </button>
-      <img id="lbImg" src="" alt="Screenshot" />
-      <button class="lightbox-nav" id="lbNext" aria-label="Próximo">
-        <i data-lucide="chevron-right" style="width:22px;height:22px;"></i>
-      </button>
-    </div>
-    <div class="lightbox-thumbs" id="lbThumbs"></div>
-  </div>
 </body>
 </html>
